@@ -22,28 +22,34 @@ def cria_movimento(acao):
 
 	return funcao
 
+def limpa():
+	def funcao():
+		if can_harvest():
+			harvest()
+		if get_ground_type() != Grounds.Grassland:
+			till()
+
+	movimento(funcao)
+
+def define_dimensoes(p, p_destino, direcao):
+	if p_destino < p:
+		direcao = opostos[direcao]
+
+	dist = abs(p_destino - p)
+	if dist > metade_n:
+		dist = n - dist
+		direcao = opostos[direcao]
+
+	return dist, direcao
+
 def vai_para(x_destino, y_destino):
 	x, y = get_pos_x(), get_pos_y()
-
-	dir_horizontal = East
-	if x_destino < x:
-		dir_horizontal = West
-	dist_horizontal = abs(x_destino - x)
-	if dist_horizontal > metade_n:
-		dist_horizontal = n - dist_horizontal
-		dir_horizontal = opostos[dir_horizontal]
-
-	dir_vertical = North
-	if y_destino < y:
-		dir_vertical = South
-	dist_vertical = abs(y_destino - y)
-	if dist_vertical > metade_n:
-		dist_vertical = n - dist_vertical
-		dir_vertical = opostos[dir_vertical]
+	
+	dist_horizontal, dir_horizontal = define_dimensoes(get_pos_x(), x_destino, East)
+	dist_vertical, dir_vertical = define_dimensoes(get_pos_y(), y_destino, North)
 
 	for _ in range(dist_horizontal):
 		move(dir_horizontal)
-
 	for _ in range(dist_vertical):
 		move(dir_vertical)
 
@@ -55,13 +61,16 @@ def cultiva(planta):
 	plant(planta)
 	agua()
 
+def prepara(planta, solo):
+	if can_harvest():
+		harvest()
+	if get_ground_type() != solo:
+		till()
+	cultiva(planta)
+
 def cria_plant(planta, solo):
 	def funcao():
-		if can_harvest():
-			harvest()
-		if get_ground_type() != solo:
-			till()
-		cultiva(planta)
+		prepara(planta, solo)
 
 	return funcao
 

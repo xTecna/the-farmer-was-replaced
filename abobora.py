@@ -7,7 +7,7 @@ _fila = None
 def inicializa():
 	global _fila
 
-	campo.cria_plant(Entities.Pumpkin, Grounds.Soil)()
+	campo.prepara(Entities.Pumpkin, Grounds.Soil)
 	fila.enfila(_fila, (get_pos_x(), get_pos_y()))	
 
 def verifica(x, y):
