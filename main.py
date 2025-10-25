@@ -1,11 +1,13 @@
+import campo
 import gerenciador
 
 clear()
+campo.movimento(till)
 
-conquista = Unlocks.Watering
-objetivos = get_cost(conquista)
-
-do_a_flip()
-gerenciador.alcanca_objetivos(objetivos)
-unlock(conquista)
-do_a_flip()
+conquistas = [Unlocks.Fertilizer]
+for conquista in conquistas:
+	objetivos = get_cost(conquista)
+	gerenciador.alcanca_objetivos(objetivos)
+	campo.limpa()
+	unlock(conquista)
+	do_a_flip()

@@ -22,14 +22,13 @@ def cria_movimento(acao):
 
 	return funcao
 
-def limpa():
-	def funcao():
-		if can_harvest():
-			harvest()
-		if get_ground_type() != Grounds.Grassland:
-			till()
+def colhe():
+	while get_entity_type() and not can_harvest():
+		pass
+	harvest()
 
-	movimento(funcao)
+def limpa():
+	movimento(colhe)
 
 def define_dimensoes(p, p_destino, direcao):
 	if p_destino < p:
@@ -54,42 +53,13 @@ def vai_para(x_destino, y_destino):
 		move(dir_vertical)
 
 def agua():
-	if num_items(Items.Water) > 0 and get_water() < 0.5:
+	if num_items(Items.Water) > 0 and get_water() <= 0.75:
 		use_item(Items.Water)
 
 def cultiva(planta):
 	plant(planta)
 	agua()
 
-def prepara(planta, solo):
-	if can_harvest():
-		harvest()
-	if get_ground_type() != solo:
-		till()
+def colhe_e_cultiva(planta):
+	colhe()
 	cultiva(planta)
-
-def cria_plant(planta, solo):
-	def funcao():
-		prepara(planta, solo)
-
-	return funcao
-
-def planta_madeira():
-	if not get_entity_type() or can_harvest():
-		harvest()
-
-		x = get_pos_x()
-		y = get_pos_y()
-
-		if x % 2 == y % 2:
-			cultiva(Entities.Tree)
-		else:
-			cultiva(Entities.Bush)
-
-def cria_harvest(planta):
-	def funcao():
-		if can_harvest():
-			harvest()
-			cultiva(planta)
-
-	return funcao

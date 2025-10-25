@@ -6,7 +6,7 @@ _girassois = {}
 def inicializa():
 	global _girassois
 
-	campo.prepara(Entities.Sunflower, Grounds.Soil)
+	campo.cultiva(Entities.Sunflower)
 	_girassois[measure()].add((get_pos_x(), get_pos_y()))
 
 def modo_girassol(objetivo):

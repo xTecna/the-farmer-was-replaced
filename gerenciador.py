@@ -1,56 +1,41 @@
 import abobora
 import campo
 import girassol
+import policultura
 import util
 
 def nivel(conquista):
 	return 2**(num_unlocked(conquista) - 1)
 
-def cria_modo(recurso, acao):
-	def funcao(objetivo):
-		while precisa(recurso, objetivo):
-			campo.movimento(acao)
-	return funcao
-
 ordem = [Items.Power, Items.Pumpkin, Items.Carrot, Items.Wood, Items.Hay]
 recursos = {
 	Items.Hay: {
 		"planta": Entities.Grass,
-		"preparo": None,
-		"cultivo": cria_modo(Items.Hay, harvest),
-		"finalizacao": None,
+		"cultivo": policultura.cria_modo_policultura(Items.Hay, Entities.Grass),
 		"custo_ciclo": campo.n * campo.n,
 		"producao_ciclo": nivel(Unlocks.Grass) * campo.n * campo.n
 	},
 	Items.Wood: {
 		"planta": Entities.Tree,
-		"preparo": None,
-		"cultivo": cria_modo(Items.Wood, campo.planta_madeira),
-		"finalizacao": campo.limpa,
+		"cultivo": policultura.cria_modo_policultura(Items.Wood, Entities.Bush),
 		"custo_ciclo": campo.n * campo.n,
 		"producao_ciclo": nivel(Unlocks.Trees) * 3 * campo.n * campo.n
 	},
 	Items.Carrot: {
 		"planta": Entities.Carrot,
-		"preparo": campo.cria_movimento(campo.cria_plant(Entities.Carrot, Grounds.Soil)),
-		"cultivo": cria_modo(Items.Carrot, campo.cria_harvest(Entities.Carrot)),
-		"finalizacao": campo.limpa,
+		"cultivo": policultura.cria_modo_policultura(Items.Carrot, Entities.Carrot),
 		"custo_ciclo": campo.n * campo.n,
 		"producao_ciclo": nivel(Unlocks.Carrots) * campo.n * campo.n
 	},
 	Items.Pumpkin: {
 		"planta": Entities.Pumpkin,
-		"preparo": None,
 		"cultivo": abobora.modo_abobora,
-		"finalizacao": campo.limpa,
 		"custo_ciclo": 2 * campo.n * campo.n,
 		"producao_ciclo": nivel(Unlocks.Pumpkins) * campo.n * campo.n * 6
 	},
 	Items.Power: {
 		"planta": Entities.Sunflower,
-		"preparo": None,
 		"cultivo": girassol.modo_girassol,
-		"finalizacao": campo.limpa,
 		"custo_ciclo": campo.n * campo.n,
 		"producao_ciclo": nivel(Unlocks.Sunflowers) * 5 * ((campo.n * campo.n) - 9) + 9
 	}
@@ -101,11 +86,7 @@ def alcanca_objetivos_rec(recurso, objetivo):
 			qtd = custo[item]
 			alcanca_objetivos_rec(item, qtd * custo_real)
 
-		if dados["preparo"]:
-			dados["preparo"]()
 		dados["cultivo"](objetivo)
-		if dados["finalizacao"]:
-			dados["finalizacao"]()
 
 def alcanca_objetivos(objetivos):
 	global ordem
