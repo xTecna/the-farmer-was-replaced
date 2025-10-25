@@ -62,3 +62,5 @@ def modo_policultura(recurso, planta, objetivo):
 
 	while gerenciador.precisa(recurso, objetivo):
 		campo.movimento(cultiva_e_vota(planta))
+
+	campo.limpa()

@@ -7,6 +7,12 @@ opostos = {
 	East: West,
 	West: East
 }
+deltas = {
+	North: (0, 1),
+	South: (0, -1),
+	East: (1, 0),
+	West: (-1, 0)
+}
 
 def movimento(acao):
 	for _ in range(n):

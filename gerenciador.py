@@ -1,4 +1,5 @@
 import abobora
+import cacto
 import campo
 import girassol
 import policultura
@@ -7,7 +8,7 @@ import util
 def nivel(conquista):
 	return 2**(num_unlocked(conquista) - 1)
 
-ordem = [Items.Power, Items.Pumpkin, Items.Carrot, Items.Wood, Items.Hay]
+ordem = [Items.Power, Items.Cactus, Items.Pumpkin, Items.Carrot, Items.Wood, Items.Hay]
 recursos = {
 	Items.Hay: {
 		"planta": Entities.Grass,
@@ -38,6 +39,12 @@ recursos = {
 		"cultivo": girassol.modo_girassol,
 		"custo_ciclo": campo.n * campo.n,
 		"producao_ciclo": nivel(Unlocks.Sunflowers) * 5 * ((campo.n * campo.n) - 9) + 9
+	},
+	Items.Cactus: {
+		"planta": Entities.Cactus,
+		"cultivo": cacto.modo_cacto,
+		"custo_ciclo": campo.n * campo.n,
+		"producao_ciclo": nivel(Unlocks.Cactus) * (campo.n * campo.n)**2
 	}
 }
 
