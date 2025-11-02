@@ -1,6 +1,7 @@
 import campo
 import gerenciador
 
+_fertilizante = False
 _voto_por_casa = {}
 _votos_pra_casa = {}
 _plantas = [Entities.Grass, Entities.Bush, Entities.Tree, Entities.Carrot]
@@ -38,19 +39,23 @@ def vota(x, y):
 
 def cultiva_e_vota(planta):
 	def funcao():
+		global _fertilizante
+
 		x, y = get_pos_x(), get_pos_y()
 	
 		vencedora = decide_planta(x, y, planta)
-		campo.colhe_e_cultiva(vencedora)
+		campo.colhe_e_cultiva(vencedora, _fertilizante)
 		if vencedora == planta:
 			vota(x, y)
 
 	return funcao
 
 def modo_policultura(recurso, planta, objetivo):
+	global _fertilizante
 	global _voto_por_casa
 	global _votos_pra_casa
 
+	_fertilizante = recurso == Items.Weird_Substance
 	for x in range(campo.n):
 		for y in range(campo.n):
 			_voto_por_casa[(x, y)] = None

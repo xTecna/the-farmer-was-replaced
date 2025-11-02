@@ -4,11 +4,9 @@ import gerenciador
 clear()
 campo.movimento(till)
 
-conquistas = [Unlocks.Dinosaurs]
+conquistas = [Unlocks.Simulation]
 for conquista in conquistas:
-	#objetivos = get_cost(conquista)
-	objetivos = {Items.Cactus: 100000}
+	objetivos = get_cost(conquista)
 	gerenciador.alcanca_objetivos(objetivos)
-	#campo.limpa()
-	#unlock(conquista)
-	#do_a_flip()
+	unlock(conquista)
+	do_a_flip()

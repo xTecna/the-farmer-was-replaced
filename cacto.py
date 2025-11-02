@@ -6,10 +6,10 @@ def inicializa():
 
 def insertion_sort(direcao):
 	x, y = get_pos_x(), get_pos_y()
-	x_delta, y_delta = campo.deltas[campo.opostos[direcao]]
 
 	for i in range(1, campo.n):
-		campo.vai_para(x + i * x_delta, y + i * y_delta)
+		x_proximo, y_proximo = campo.proximo(x, y, campo.opostos[direcao], i)
+		campo.vai_para(x_proximo, y_proximo)
 
 		j = i
 		while j > 0 and measure(direcao) > measure():

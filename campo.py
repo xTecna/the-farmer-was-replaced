@@ -1,6 +1,7 @@
 n = get_world_size()
 metade_n = n // 2
 
+direcoes = [North, South, East, West]
 opostos = {
 	North: South,
 	South: North,
@@ -36,6 +37,13 @@ def colhe():
 def limpa():
 	movimento(colhe)
 
+def proximo(x, y, direcao, passos=1):
+	x_delta, y_delta = deltas[direcao]
+	return x + passos * x_delta, y + passos * y_delta
+
+def distancia(x1, y1, x2, y2):
+	return abs(x2 - x1) + abs(y2 - y1)
+
 def define_dimensoes(p, p_destino, direcao):
 	if p_destino < p:
 		direcao = opostos[direcao]
@@ -62,10 +70,16 @@ def agua():
 	if num_items(Items.Water) > 0 and get_water() <= 0.75:
 		use_item(Items.Water)
 
-def cultiva(planta):
+def fertiliza():
+	if num_items(Items.Fertilizer) > 0:
+		use_item(Items.Fertilizer)
+
+def cultiva(planta, fertilizante=False):
 	plant(planta)
 	agua()
+	if fertilizante:
+		fertiliza()
 
-def colhe_e_cultiva(planta):
+def colhe_e_cultiva(planta, fertilizante=False):
 	colhe()
-	cultiva(planta)
+	cultiva(planta, fertilizante)
