@@ -1,5 +1,5 @@
-n = get_world_size()
-metade_n = n // 2
+n = 0
+metade_n = 0
 
 direcoes = [North, South, East, West]
 opostos = {
@@ -15,6 +15,13 @@ deltas = {
 	West: (-1, 0)
 }
 
+def inicializa():
+	global n
+	global metade_n
+
+	n = get_world_size()
+	metade_n = n // 2
+
 def movimento(acao):
 	for _ in range(n):
 		for _ in range(n - 1):
@@ -22,6 +29,31 @@ def movimento(acao):
 			move(North)
 		acao()
 		move(East)
+
+def movimento_dinossauro(acao):
+	dir_horizontal = East
+	dir_vertical = North
+
+	acao()
+	move(dir_vertical)
+
+	for _ in range(n - 1):
+		for _ in range(n - 2):
+			acao()
+			move(dir_vertical)
+		dir_vertical = opostos[dir_vertical]
+
+		acao()
+		move(dir_horizontal)
+
+	for _ in range(n - 1):
+		acao()
+		move(dir_vertical)
+
+	dir_horizontal = opostos[dir_horizontal]
+	for _ in range(n - 1):
+		acao()
+		move(dir_horizontal)
 
 def cria_movimento(acao):
 	def funcao():

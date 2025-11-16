@@ -14,23 +14,23 @@ def dfs(x, y):
 	global _x_tesouro
 	global _y_tesouro
 
+	_visitados.add((x, y))
+
 	if get_entity_type() == Entities.Treasure:
 		return True
 
 	direcoes = []
 	for direcao in campo.direcoes:
-		if can_move(direcao):
-			x_proximo, y_proximo = campo.proximo(x, y, direcao)
-			if (x_proximo, y_proximo) not in _visitados:
-				direcoes.append((campo.distancia(x_proximo, y_proximo, _x_tesouro, _y_tesouro), direcao, x_proximo, y_proximo))
+		x_proximo, y_proximo = campo.proximo(x, y, direcao)
+		direcoes.append((campo.distancia(x_proximo, y_proximo, _x_tesouro, _y_tesouro), direcao, x_proximo, y_proximo))
 	util.insertion_sort(direcoes, comp)
 
 	for _, direcao, x_proximo, y_proximo in direcoes:
-		_visitados.add((x_proximo, y_proximo))
-		move(direcao)
-		if dfs(x_proximo, y_proximo):
-			return True
-		move(campo.opostos[direcao])
+		if can_move(direcao) and (x_proximo, y_proximo) not in _visitados:
+			move(direcao)
+			if dfs(x_proximo, y_proximo):
+				return True
+			move(campo.opostos[direcao])
 
 	return False
 
@@ -49,7 +49,7 @@ def modo_labirinto(objetivo):
 			use_item(Items.Weird_Substance, custo)
 
 			x, y = get_pos_x(), get_pos_y()
-			_visitados = {(x, y)}
+			_visitados = set()
 			_x_tesouro, _y_tesouro = measure()
 			dfs(x, y)
 		harvest()
