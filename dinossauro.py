@@ -1,4 +1,5 @@
 import campo
+import chapeus
 import gerenciador
 
 _tudo_bem = True
@@ -15,13 +16,12 @@ def verifica():
 def modo_dinossauro(objetivo):
 	global _tudo_bem
 
-	campo.vai_para(0, 0)
-
 	while gerenciador.precisa(Items.Bone, objetivo):
+		campo.vai_para(0, 0)
 		change_hat(Hats.Dinosaur_Hat)
 
 		_tudo_bem = True
 		while _tudo_bem:
-			campo.movimento_dinossauro(verifica)
+			campo.movimento_bloco(campo.n, campo.n, verifica)
 
-		change_hat(Hats.Straw_Hat)
+		chapeus.usa()

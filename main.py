@@ -1,15 +1,20 @@
 import campo
+import chapeus
 import gerenciador
+import megafazenda
 
 def inicializa(conquista=None):
 	campo.inicializa()
+	chapeus.inicializa()
+	megafazenda.inicializa()
 	gerenciador.inicializa()
 
 	if conquista == Unlocks.Expand:
-		campo.movimento(till)
+		campo.ara()
 
 clear()
 inicializa(Unlocks.Expand)
+chapeus.usa()
 
 conquistas = list(Unlocks)
 while True:
@@ -18,13 +23,11 @@ while True:
 		break
 
 	print(conquista)
-	if conquista == Unlocks.Megafarm:
-		do_a_flip()
-		pet_the_piggy()
-		break
 
 	objetivos = get_cost(conquista)
 	gerenciador.alcanca_objetivos(objetivos)
 
 	unlock(conquista)
 	do_a_flip()
+
+	inicializa(conquista)

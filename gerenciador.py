@@ -4,6 +4,7 @@ import campo
 import dinossauro
 import girassol
 import labirinto
+import megafazenda
 import policultura
 import util
 
@@ -20,6 +21,8 @@ def inicializa():
 	global _ordem
 	global _recursos
 
+	dimensao = min(megafazenda.linhas, megafazenda.colunas)
+
 	_ordem = [Items.Power, Items.Bone, Items.Gold, Items.Weird_Substance, Items.Cactus, Items.Pumpkin, Items.Carrot, Items.Wood, Items.Hay]
 	_recursos = {
 		Items.Hay: {
@@ -28,15 +31,15 @@ def inicializa():
 			"ciclo_inicio": True,
 			"custo_ciclo": campo.n * campo.n,
 			"custo_energia_ciclo": campo.n * campo.n,
-			"producao_ciclo": (nivel(Unlocks.Polyculture) + 1) * (nivel(Unlocks.Grass) * campo.n * campo.n) // 2
+			"producao_ciclo": (nivel(Unlocks.Polyculture) + 1) * ((nivel(Unlocks.Grass) * campo.n * campo.n) // 2)
 		},
 		Items.Wood: {
 			"planta": Entities.Tree,
-			"cultivo": policultura.cria_modo_policultura(Items.Wood, Entities.Bush),
+			"cultivo": policultura.cria_modo_policultura(Items.Wood, Entities.Tree),
 			"ciclo_inicio": True,
 			"custo_ciclo": campo.n * campo.n,
 			"custo_energia_ciclo": campo.n * campo.n,
-			"producao_ciclo": (nivel(Unlocks.Polyculture) + 1) * (nivel(Unlocks.Trees) * campo.n * campo.n) // 2
+			"producao_ciclo": (nivel(Unlocks.Polyculture) + 1) * ((nivel(Unlocks.Trees) * 3 * campo.n * campo.n) // 2)
 		},
 		Items.Carrot: {
 			"planta": Entities.Carrot,
@@ -44,15 +47,15 @@ def inicializa():
 			"ciclo_inicio": True,
 			"custo_ciclo": campo.n * campo.n,
 			"custo_energia_ciclo": campo.n * campo.n,
-			"producao_ciclo": (nivel(Unlocks.Polyculture) + 1) * (nivel(Unlocks.Carrots) * campo.n * campo.n) // 2
+			"producao_ciclo": (nivel(Unlocks.Polyculture) + 1) * ((nivel(Unlocks.Carrots) * campo.n * campo.n) // 2)
 		},
 		Items.Pumpkin: {
 			"planta": Entities.Pumpkin,
 			"cultivo": abobora.modo_abobora,
 			"ciclo_inicio": False,
 			"custo_ciclo": 2 * campo.n * campo.n,
-			"custo_energia_ciclo": 2 * campo.n * campo.n,
-			"producao_ciclo": nivel(Unlocks.Pumpkins) * campo.n * campo.n * 6
+			"custo_energia_ciclo": campo.n * campo.n * campo.n + campo.n * campo.n,
+			"producao_ciclo": nivel(Unlocks.Pumpkins) * campo.n * campo.n * min(campo.n, 6)
 		},
 		Items.Power: {
 			"planta": Entities.Sunflower,
@@ -60,14 +63,14 @@ def inicializa():
 			"ciclo_inicio": False,
 			"custo_ciclo": campo.n * campo.n,
 			"custo_energia_ciclo": campo.n * campo.n,
-			"producao_ciclo": nivel(Unlocks.Sunflowers) * 5 * ((campo.n * campo.n) - 9) + 9
+			"producao_ciclo": (nivel(Unlocks.Sunflowers) * 5 * ((campo.n * campo.n) - 9) + 9) - (campo.n * campo.n)
 		},
 		Items.Cactus: {
 			"planta": Entities.Cactus,
 			"cultivo": cacto.modo_cacto,
 			"ciclo_inicio": False,
 			"custo_ciclo": campo.n * campo.n,
-			"custo_energia_ciclo": 2 * campo.n * campo.n * campo.n,
+			"custo_energia_ciclo": (campo.n * campo.n * campo.n) + (campo.n * (campo.n * campo.n) // 2),
 			"producao_ciclo": nivel(Unlocks.Cactus) * (campo.n * campo.n)**2
 		},
 		Items.Weird_Substance: {
@@ -76,23 +79,23 @@ def inicializa():
 			"ciclo_inicio": True,
 			"custo_ciclo": campo.n * campo.n,
 			"custo_energia_ciclo": campo.n * campo.n,
-			"producao_ciclo": (nivel(Unlocks.Polyculture) + 1) * (nivel(Unlocks.Trees) * 3 * campo.n * campo.n) // 2
+			"producao_ciclo": (nivel(Unlocks.Polyculture) + 1) * ((nivel(Unlocks.Trees) * 3 * campo.n * campo.n) // 2)
 		},
 		Items.Gold: {
 			"planta": Entities.Treasure,
 			"cultivo": labirinto.modo_labirinto,
 			"ciclo_inicio": False,
-			"custo_ciclo": 301 * campo.n * nivel(Unlocks.Mazes),
-			"custo_energia_ciclo": 301 * campo.n * campo.n,
-			"producao_ciclo": 301 * nivel(Unlocks.Mazes) * campo.n * campo.n
+			"custo_ciclo": 301 * megafazenda.n_drones * dimensao,
+			"custo_energia_ciclo": 301 * megafazenda.n_drones * ((dimensao * dimensao) // 2),
+			"producao_ciclo": 301 * nivel(Unlocks.Mazes) * megafazenda.n_drones * dimensao * dimensao
 		},
 		Items.Bone: {
 			"planta": Entities.Apple,
 			"cultivo": dinossauro.modo_dinossauro,
 			"ciclo_inicio": False,
 			"custo_ciclo": campo.n * campo.n,
-			"custo_energia_ciclo": campo.n * campo.n * campo.n * campo.n,
-			"producao_ciclo": (campo.n * campo.n)**2
+			"custo_energia_ciclo": 2 * campo.n * campo.n * campo.n,
+			"producao_ciclo": nivel(Unlocks.Dinosaurs) * (campo.n * campo.n)**2
 		}
 }
 
@@ -108,9 +111,10 @@ def calcula_energia_rec(recurso, objetivo):
 		n_ciclos = util.teto_div(objetivo_real, dados["producao_ciclo"])
 		if dados["ciclo_inicio"]:
 			n_ciclos += 1
-		custo_real = dados["custo_energia_ciclo"] * n_ciclos
+		custo_real = dados["custo_ciclo"] * n_ciclos
+		custo_energia_real = dados["custo_energia_ciclo"] * n_ciclos
 
-		resposta = custo_real
+		resposta = custo_energia_real
 
 		custo = get_cost(dados["planta"])
 		for item in custo:

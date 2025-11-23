@@ -9,3 +9,9 @@ def insertion_sort(v, comp):
 		while j > 0 and comp(v[j - 1], v[j]):
 			v[j - 1], v[j] = v[j], v[j - 1]
 			j -= 1
+
+def sqrt_2(x):
+	i = 1
+	while i * i <= x:
+		i *= 2
+	return i // 2

@@ -1,3 +1,5 @@
+import megafazenda
+
 n = 0
 metade_n = 0
 
@@ -30,15 +32,21 @@ def movimento(acao):
 		acao()
 		move(East)
 
-def movimento_dinossauro(acao):
+def movimento_linha(acao):
+	for _ in range(n - 1):
+		acao()
+		move(East)
+	acao()
+
+def movimento_bloco(linhas, colunas, acao):
 	dir_horizontal = East
 	dir_vertical = North
 
 	acao()
 	move(dir_vertical)
 
-	for _ in range(n - 1):
-		for _ in range(n - 2):
+	for _ in range(colunas - 1):
+		for _ in range(linhas - 2):
 			acao()
 			move(dir_vertical)
 		dir_vertical = opostos[dir_vertical]
@@ -46,12 +54,12 @@ def movimento_dinossauro(acao):
 		acao()
 		move(dir_horizontal)
 
-	for _ in range(n - 1):
+	for _ in range(linhas - 1):
 		acao()
 		move(dir_vertical)
 
 	dir_horizontal = opostos[dir_horizontal]
-	for _ in range(n - 1):
+	for _ in range(colunas - 1):
 		acao()
 		move(dir_horizontal)
 
@@ -61,13 +69,22 @@ def cria_movimento(acao):
 
 	return funcao
 
+def cria_movimento_linha(acao):
+	def funcao():
+		movimento_linha(acao)
+
+	return funcao
+
+def ara():
+	megafazenda.paraleliza_linha(cria_movimento_linha(till))
+
 def colhe():
 	while get_entity_type() and not can_harvest():
-		pass
+		agua()
 	harvest()
 
 def limpa():
-	movimento(colhe)
+	megafazenda.paraleliza_linha(cria_movimento_linha(colhe))
 
 def proximo(x, y, direcao, passos=1):
 	x_delta, y_delta = deltas[direcao]

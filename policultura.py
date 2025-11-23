@@ -1,5 +1,6 @@
 import campo
 import gerenciador
+import megafazenda
 
 _fertilizante = False
 _voto_por_casa = {}
@@ -15,6 +16,9 @@ def cria_modo_policultura(recurso, planta):
 def decide_planta(x, y, planta):
 	global _voto_por_casa
 	global _votos_pra_casa
+
+	if planta == Entities.Tree and x % 2 != y % 2:
+		planta = Entities.Bush
 
 	planta_vencedora = planta
 	votos_vencedores = 0
@@ -50,6 +54,13 @@ def cultiva_e_vota(planta):
 
 	return funcao
 
+def tarefa(recurso, planta, objetivo):
+	def funcao():
+		while gerenciador.precisa(recurso, objetivo):
+			campo.movimento_bloco(megafazenda.linhas, megafazenda.colunas, cultiva_e_vota(planta))
+
+	return funcao
+
 def modo_policultura(recurso, planta, objetivo):
 	global _fertilizante
 	global _voto_por_casa
@@ -65,7 +76,5 @@ def modo_policultura(recurso, planta, objetivo):
 					continue
 				_votos_pra_casa[(x, y)][p] = 0
 
-	while gerenciador.precisa(recurso, objetivo):
-		campo.movimento(cultiva_e_vota(planta))
-
+	megafazenda.paraleliza_blocos(tarefa(recurso, planta, objetivo))
 	campo.limpa()
