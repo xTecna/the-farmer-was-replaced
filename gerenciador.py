@@ -1,99 +1,149 @@
 import abobora
+import cacto
 import campo
+import dinossauro
 import girassol
+import labirinto
+import policultura
 import util
+
+_ordem = []
+_recursos = {}
 
 def nivel(conquista):
 	return 2**(num_unlocked(conquista) - 1)
 
-def cria_modo(recurso, acao):
-	def funcao(objetivo):
-		while precisa(recurso, objetivo):
-			campo.movimento(acao)
-	return funcao
+def completada(conquista):
+	return not get_cost(conquista)
 
-ordem = [Items.Power, Items.Pumpkin, Items.Carrot, Items.Wood, Items.Hay]
-recursos = {
-	Items.Hay: {
-		"planta": Entities.Grass,
-		"preparo": None,
-		"cultivo": cria_modo(Items.Hay, harvest),
-		"finalizacao": None,
-		"custo_ciclo": campo.n * campo.n,
-		"producao_ciclo": nivel(Unlocks.Grass) * campo.n * campo.n
-	},
-	Items.Wood: {
-		"planta": Entities.Tree,
-		"preparo": None,
-		"cultivo": cria_modo(Items.Wood, campo.planta_madeira),
-		"finalizacao": campo.limpa,
-		"custo_ciclo": campo.n * campo.n,
-		"producao_ciclo": nivel(Unlocks.Trees) * 3 * campo.n * campo.n
-	},
-	Items.Carrot: {
-		"planta": Entities.Carrot,
-		"preparo": campo.cria_movimento(campo.cria_plant(Entities.Carrot, Grounds.Soil)),
-		"cultivo": cria_modo(Items.Carrot, campo.cria_harvest(Entities.Carrot)),
-		"finalizacao": campo.limpa,
-		"custo_ciclo": campo.n * campo.n,
-		"producao_ciclo": nivel(Unlocks.Carrots) * campo.n * campo.n
-	},
-	Items.Pumpkin: {
-		"planta": Entities.Pumpkin,
-		"preparo": None,
-		"cultivo": abobora.modo_abobora,
-		"finalizacao": campo.limpa,
-		"custo_ciclo": 2 * campo.n * campo.n,
-		"producao_ciclo": nivel(Unlocks.Pumpkins) * campo.n * campo.n * 6
-	},
-	Items.Power: {
-		"planta": Entities.Sunflower,
-		"preparo": None,
-		"cultivo": girassol.modo_girassol,
-		"finalizacao": campo.limpa,
-		"custo_ciclo": campo.n * campo.n,
-		"producao_ciclo": nivel(Unlocks.Sunflowers) * 5 * ((campo.n * campo.n) - 9) + 9
-	}
+def inicializa():
+	global _ordem
+	global _recursos
+
+	_ordem = [Items.Power, Items.Bone, Items.Gold, Items.Weird_Substance, Items.Cactus, Items.Pumpkin, Items.Carrot, Items.Wood, Items.Hay]
+	_recursos = {
+		Items.Hay: {
+			"planta": Entities.Grass,
+			"cultivo": policultura.cria_modo_policultura(Items.Hay, Entities.Grass),
+			"ciclo_inicio": True,
+			"custo_ciclo": campo.n * campo.n,
+			"custo_energia_ciclo": campo.n * campo.n,
+			"producao_ciclo": (nivel(Unlocks.Polyculture) + 1) * (nivel(Unlocks.Grass) * campo.n * campo.n) // 2
+		},
+		Items.Wood: {
+			"planta": Entities.Tree,
+			"cultivo": policultura.cria_modo_policultura(Items.Wood, Entities.Bush),
+			"ciclo_inicio": True,
+			"custo_ciclo": campo.n * campo.n,
+			"custo_energia_ciclo": campo.n * campo.n,
+			"producao_ciclo": (nivel(Unlocks.Polyculture) + 1) * (nivel(Unlocks.Trees) * campo.n * campo.n) // 2
+		},
+		Items.Carrot: {
+			"planta": Entities.Carrot,
+			"cultivo": policultura.cria_modo_policultura(Items.Carrot, Entities.Carrot),
+			"ciclo_inicio": True,
+			"custo_ciclo": campo.n * campo.n,
+			"custo_energia_ciclo": campo.n * campo.n,
+			"producao_ciclo": (nivel(Unlocks.Polyculture) + 1) * (nivel(Unlocks.Carrots) * campo.n * campo.n) // 2
+		},
+		Items.Pumpkin: {
+			"planta": Entities.Pumpkin,
+			"cultivo": abobora.modo_abobora,
+			"ciclo_inicio": False,
+			"custo_ciclo": 2 * campo.n * campo.n,
+			"custo_energia_ciclo": 2 * campo.n * campo.n,
+			"producao_ciclo": nivel(Unlocks.Pumpkins) * campo.n * campo.n * 6
+		},
+		Items.Power: {
+			"planta": Entities.Sunflower,
+			"cultivo": girassol.modo_girassol,
+			"ciclo_inicio": False,
+			"custo_ciclo": campo.n * campo.n,
+			"custo_energia_ciclo": campo.n * campo.n,
+			"producao_ciclo": nivel(Unlocks.Sunflowers) * 5 * ((campo.n * campo.n) - 9) + 9
+		},
+		Items.Cactus: {
+			"planta": Entities.Cactus,
+			"cultivo": cacto.modo_cacto,
+			"ciclo_inicio": False,
+			"custo_ciclo": campo.n * campo.n,
+			"custo_energia_ciclo": 2 * campo.n * campo.n * campo.n,
+			"producao_ciclo": nivel(Unlocks.Cactus) * (campo.n * campo.n)**2
+		},
+		Items.Weird_Substance: {
+			"planta": Entities.Tree,
+			"cultivo": policultura.cria_modo_policultura(Items.Weird_Substance, Entities.Tree),
+			"ciclo_inicio": True,
+			"custo_ciclo": campo.n * campo.n,
+			"custo_energia_ciclo": campo.n * campo.n,
+			"producao_ciclo": (nivel(Unlocks.Polyculture) + 1) * (nivel(Unlocks.Trees) * 3 * campo.n * campo.n) // 2
+		},
+		Items.Gold: {
+			"planta": Entities.Treasure,
+			"cultivo": labirinto.modo_labirinto,
+			"ciclo_inicio": False,
+			"custo_ciclo": 301 * campo.n * nivel(Unlocks.Mazes),
+			"custo_energia_ciclo": 301 * campo.n * campo.n,
+			"producao_ciclo": 301 * nivel(Unlocks.Mazes) * campo.n * campo.n
+		},
+		Items.Bone: {
+			"planta": Entities.Apple,
+			"cultivo": dinossauro.modo_dinossauro,
+			"ciclo_inicio": False,
+			"custo_ciclo": campo.n * campo.n,
+			"custo_energia_ciclo": campo.n * campo.n * campo.n * campo.n,
+			"producao_ciclo": (campo.n * campo.n)**2
+		}
 }
 
-def calcula_objetivos_rec(recurso, objetivo):
+def calcula_energia_rec(recurso, objetivo):
+	global _recursos
+
 	resposta = 0
 
 	if precisa(recurso, objetivo):
-		dados = recursos[recurso]
+		dados = _recursos[recurso]
 
 		objetivo_real = (objetivo - num_items(recurso))
 		n_ciclos = util.teto_div(objetivo_real, dados["producao_ciclo"])
-		custo_real = dados["custo_ciclo"] * n_ciclos
+		if dados["ciclo_inicio"]:
+			n_ciclos += 1
+		custo_real = dados["custo_energia_ciclo"] * n_ciclos
 
 		resposta = custo_real
 
 		custo = get_cost(dados["planta"])
 		for item in custo:
 			qtd = custo[item]
-			resposta += calcula_objetivos_rec(item, qtd * custo_real)
+			resposta += calcula_energia_rec(item, qtd * custo_real)
 
 	return resposta
 
-def calcula_objetivos(objetivos):
+def calcula_energia(objetivos):
+	global _ordem
+
 	resposta = 0
 
-	for recurso in ordem:
+	for recurso in _ordem:
 		if recurso not in objetivos:
 			continue
-		resposta += calcula_objetivos_rec(recurso, objetivos[recurso])
+		resposta += calcula_energia_rec(recurso, objetivos[recurso])
 
-	return resposta
+	return util.teto_div(resposta, 30)
 
 def precisa(recurso, objetivo):
 	return num_items(recurso) < objetivo
 
 def alcanca_objetivos_rec(recurso, objetivo):
+	global _recursos
+
 	if precisa(recurso, objetivo):
-		dados = recursos[recurso]
+		dados = _recursos[recurso]
 		
 		objetivo_real = (objetivo - num_items(recurso))
 		n_ciclos = util.teto_div(objetivo_real, dados["producao_ciclo"])
+		if dados["ciclo_inicio"]:
+			n_ciclos += 1
 		custo_real = dados["custo_ciclo"] * n_ciclos
 
 		custo = get_cost(dados["planta"])
@@ -101,18 +151,35 @@ def alcanca_objetivos_rec(recurso, objetivo):
 			qtd = custo[item]
 			alcanca_objetivos_rec(item, qtd * custo_real)
 
-		if dados["preparo"]:
-			dados["preparo"]()
 		dados["cultivo"](objetivo)
-		if dados["finalizacao"]:
-			dados["finalizacao"]()
 
 def alcanca_objetivos(objetivos):
-	global ordem
+	global _ordem
 
-	objetivos[Items.Power] = util.teto_div(calcula_objetivos(objetivos), 30)
+	objetivos[Items.Power] = calcula_energia(objetivos)
 
-	for recurso in ordem:
+	for recurso in _ordem:
 		if recurso not in objetivos:
 			continue
 		alcanca_objetivos_rec(recurso, objetivos[recurso])
+
+def filtra_conquistas(conquistas):
+	for i in range(len(conquistas) - 1, -1, -1):
+		if completada(conquistas[i]):
+			conquistas.pop(i)
+
+def escolha_conquista(conquistas):
+	filtra_conquistas(conquistas)
+	if not conquistas:
+		return None
+
+	melhor_conquista = conquistas[0]
+	menor_custo = calcula_energia(get_cost(conquistas[0]))
+
+	for conquista in conquistas:
+		custo = calcula_energia(get_cost(conquista))
+		if custo < menor_custo:
+			menor_custo = custo
+			melhor_conquista = conquista
+
+	return melhor_conquista
