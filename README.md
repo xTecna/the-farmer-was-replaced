@@ -15,6 +15,7 @@ Além dos códigos, também estou gravando uma série de vídeos no YouTube expl
 * Parte 5 - Cactos: https://youtu.be/t-h2tg6CRks
 * Parte 6 - Labirintos: https://youtu.be/AAkYASHeeR0
 * Parte 7 - Dinossauro: https://youtu.be/YDr4WyfsKP4
+* Parte Final - Megafazenda: https://youtu.be/Mh17s651q_4
 
 ## Contribuições
 
