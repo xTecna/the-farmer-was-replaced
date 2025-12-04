@@ -19,6 +19,4 @@ Além dos códigos, também estou gravando uma série de vídeos no YouTube expl
 
 ## Contribuições
 
-Infelizmente esse repositório não aceita contribuições justamente por eu estar fazendo a série de vídeos no YouTube junto com esse código. Entretanto, após a série terminar, sinta-se livre para fazer contribuições caso tenha alguma sugestão.
-
-Se encontrar algum bug ou tiver uma sugestão mais imediata, por favor, mande um comentário no vídeo. Obrigada pela atenção, tenham uma ótima semana! ❤
+Sinta-se livre para fazer contribuições caso tenha alguma sugestão. Se encontrar algum bug ou tiver uma sugestão mais imediata, por favor, mande um comentário no vídeo. Obrigada pela atenção, tenham uma ótima semana! ❤
